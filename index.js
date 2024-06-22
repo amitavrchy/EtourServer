@@ -56,7 +56,7 @@ async function run() {
             res.json(touristSpots);
         });
 
-        app.post('/add-spot', async(req, res) => {
+        app.post('/add-spot', async (req, res) => {
             const spot = req.body;
             const result = await spotCollection.insertOne(spot);
             res.send(result);
@@ -70,6 +70,29 @@ async function run() {
             } catch (err) {
                 res.status(500).json({ message: err.message });
             }
+        });
+
+        app.put('/spots/:id', async (req, res) => {
+            const { id } = req.params;
+            const updatedSpot = req.body;
+            const filter = {_id: new ObjectId(id)}
+            const updatedData = {
+                $set: {
+                    tourist_spot_name: updatedSpot.tourist_spot_name,
+                    user_name: updatedSpot.user_name,
+                    user_email: updatedSpot.user_email,
+                    totalVisitorsPerYear: updatedSpot.totalVisitorsPerYear,
+                    travel_time: updatedSpot.travel_time,
+                    seasonality: updatedSpot.seasonality,
+                    average_cost: updatedSpot.average_cost,
+                    location: updatedSpot.location,
+                    image: updatedSpot.image,
+                    country_name: updatedSpot.country_name,
+                    short_description: updatedSpot.short_description,
+                }
+            }
+            const result = await spotCollection.updateOne(filter, updatedData);
+            res.send(result);
         });
 
 
