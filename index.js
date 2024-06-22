@@ -62,6 +62,16 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/spots/:email', async (req, res) => {
+            const { email } = req.params;
+            try {
+                const spots = await spotCollection.find({ user_email: email }).toArray();
+                res.json(spots);
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
