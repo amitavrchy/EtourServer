@@ -30,7 +30,6 @@ async function run() {
         const spotCollection = client.db("torism_management").collection("touristSpot");
 
         app.get('/tourist-spots', async (req, res) => {
-            console.log("inside the tourist spots backend");
             try {
                 const spots = await spotCollection.find().toArray();
                 res.json(spots);
@@ -42,12 +41,27 @@ async function run() {
         app.get('/tourist-spots/:id', async (req, res) => {
             try {
                 const id = req.params.id;
-                const spot = await spotCollection.findOne({ _id: ObjectId(id) });
+                const spot = await spotCollection.findOne({ _id: new ObjectId(id) });
                 res.json(spot);
             } catch (err) {
                 res.status(500).json({ error: err.message });
             }
         });
+
+        app.get('/country-spots/:country', async (req, res) => {
+            const country = req.params.country;
+            console.log(country);
+            const touristSpots = await spotCollection.find({ country_name: country }).toArray();
+            console.log(touristSpots)
+            res.json(touristSpots);
+        });
+
+        app.post('/add-spot', async(req, res) => {
+            const spot = req.body;
+            const result = await spotCollection.insertOne(spot);
+            res.send(result);
+        })
+
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
