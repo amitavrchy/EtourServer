@@ -15,13 +15,13 @@ const client = new MongoClient(uri, {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
-    }
+    },
+    connectTimeoutMS: 300000,
+    socketTimeoutMS: 450000
 });
 
 async function run() {
     try {
-        await client.connect();
-
         const spotCollection = client.db("torism_management").collection("touristSpot");
 
         app.get('/tourist-spots', async (req, res) => {
@@ -70,7 +70,7 @@ async function run() {
         app.put('/spots/:id', async (req, res) => {
             const { id } = req.params;
             const updatedSpot = req.body;
-            const filter = {_id: new ObjectId(id)}
+            const filter = { _id: new ObjectId(id) }
             const updatedData = {
                 $set: {
                     tourist_spot_name: updatedSpot.tourist_spot_name,
@@ -79,7 +79,7 @@ async function run() {
                     totalVisitorsPerYear: updatedSpot.totalVisitorsPerYear,
                     travel_time: updatedSpot.travel_time,
                     seasonality: updatedSpot.seasonality,
-                    average_cost: updatedSpot.average_cost,
+                    average_cost: parseInt(updatedSpot.average_cost),
                     location: updatedSpot.location,
                     image: updatedSpot.image,
                     country_name: updatedSpot.country_name,
@@ -90,9 +90,9 @@ async function run() {
             res.send(result);
         });
 
-        app.delete('/spots/:id', async(req,res) => {
+        app.delete('/spots/:id', async (req, res) => {
             const { id } = req.params;
-            const filter = {_id: new ObjectId(id)};
+            const filter = { _id: new ObjectId(id) };
             const result = await spotCollection.deleteOne(filter);
             res.send(result);
         })
@@ -101,6 +101,10 @@ async function run() {
     }
 }
 run().catch(console.dir);
+
+app.get("/", (req, res) => {
+    res.send("Server is Running");
+})
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
