@@ -24,6 +24,8 @@ async function connectToDatabase() {
                 strict: true,
                 deprecationErrors: true,
             },
+            connectTimeoutMS: 300000,
+            socketTimeoutMS: 450000
         });
 
         await client.connect(); // Connect only once
