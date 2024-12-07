@@ -44,7 +44,6 @@ async function run() {
 
         app.get('/country-spots/:country', async (req, res) => {
             const country = req.params.country;
-            console.log(country);
             const touristSpots = await spotCollection.find({ country_name: country }).toArray();
             console.log(touristSpots)
             res.json(touristSpots);
@@ -104,3 +103,4 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
     res.send("Server is Running");
 })
+module.exports = run;
