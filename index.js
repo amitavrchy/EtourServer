@@ -3,7 +3,6 @@ const cors = require('cors');
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
-const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cors());
@@ -105,7 +104,3 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
     res.send("Server is Running");
 })
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
